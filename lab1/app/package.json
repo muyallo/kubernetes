@@ -1,0 +1,12 @@
+{
+  "name": "k8s-node-web",
+  "version": "1.0.0",
+  "description": "Aplicación Node.js para laboratorio de Kubernetes",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kubernetes Node.js Lab</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f7fb;
+      color: #172033;
+    }
+    .card {
+      width: min(680px, 90%);
+      padding: 36px;
+      background: white;
+      border: 1px solid #dfe6ef;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(23, 32, 51, .08);
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef3ff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    h1 { margin-bottom: 10px; }
+    p { line-height: 1.6; }
+    code {
+      display: inline-block;
+      padding: 4px 7px;
+      background: #f2f4f7;
+      border-radius: 6px;
+    }
+    .status {
+      margin-top: 24px;
+      padding: 16px;
+      border-left: 4px solid #326ce5;
+      background: #f7f9fc;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <span class="badge">Kubernetes Lab 1</span>
+    <h1>Aplicación Node.js desplegada correctamente</h1>
+    <p>
+      Esta página se entrega desde una aplicación Node.js empaquetada
+      como contenedor y administrada por Kubernetes.
+    </p>
+
+    <div class="status">
+      <strong>Instancia que respondió:</strong><br>
+      <code></code>
+    </div>
+  </main>
+</body>
+</html>

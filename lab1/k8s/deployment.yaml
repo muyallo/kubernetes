@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-web-deployment
+  labels:
+    app: node-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-web
+  template:
+    metadata:
+      labels:
+        app: node-web
+    spec:
+      containers:
+        - name: node-web
+          image: k8s-node-web:1.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+              protocol: TCP

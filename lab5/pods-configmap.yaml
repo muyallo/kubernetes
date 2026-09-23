@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-env-pod
+  namespace: lab5
+spec:
+  containers:
+    - name: app
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - |
+          echo "LOG_LEVEL=$LOG_LEVEL"
+          echo "APP_PORT=$APP_PORT"
+          echo "APP_ENV=$APP_ENV"
+          sleep 3600
+      envFrom:
+        - configMapRef:
+            name: app-config
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-volume-pod
+  namespace: lab5
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.27-alpine
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: nginx-config-volume
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+  volumes:
+    - name: nginx-config-volume
+      configMap:
+        name: nginx-config

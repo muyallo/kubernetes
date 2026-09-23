@@ -1,0 +1,21 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-app-web
+  namespace: lab3
+spec:
+  minAvailable: 3
+  selector:
+    matchLabels:
+      app: app-web
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-app-backend-strict
+  namespace: lab3
+spec:
+  minAvailable: 3
+  selector:
+    matchLabels:
+      app: app-backend
