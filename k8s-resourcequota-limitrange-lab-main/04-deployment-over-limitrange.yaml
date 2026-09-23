@@ -1,0 +1,31 @@
+# Caso 2: 1 sola réplica, pero su contenedor pide más que el max del
+# LimitRange (1 CPU > 500m). Ningún Pod llega a crearse.
+apiVersion: apps/v1                             # Versión de la API donde viven los Deployments
+kind: Deployment                                # Tipo de objeto: mantiene N copias (réplicas) de una aplicación corriendo
+metadata:                                       # Datos que identifican al objeto
+  name: web-over-limitrange                     # Nombre del Deployment
+  namespace: lab-resource-quota                 # Namespace donde se crea (y cuyas reglas debe cumplir)
+  labels:                                       # Etiquetas del Deployment
+    app.kubernetes.io/name: web-over-limitrange  # Etiqueta estándar: nombre de la aplicación
+    app.kubernetes.io/part-of: lab-resource-quota  # Pertenece al laboratorio
+spec:                                           # Especificación: el estado que queremos
+  replicas: 1                                   # Solo 1 copia: el problema no es la cantidad sino el tamaño
+  selector:                                     # Cómo reconoce el Deployment cuáles Pods son suyos
+    matchLabels:                                # Son suyos los Pods que tengan estas etiquetas
+      app.kubernetes.io/name: web-over-limitrange  # Debe coincidir con la etiqueta de la plantilla de abajo
+  template:                                     # Plantilla (molde) con la que se fabrica cada Pod
+    metadata:                                   # Datos que llevará cada Pod creado
+      labels:                                   # Etiquetas que se ponen a cada Pod
+        app.kubernetes.io/name: web-over-limitrange  # Así el selector de arriba lo reconoce como propio
+        app.kubernetes.io/part-of: lab-resource-quota  # Pertenece al laboratorio
+    spec:                                       # Qué corre dentro de cada Pod
+      containers:                               # Lista de contenedores del Pod
+        - name: pause                           # Nombre del contenedor dentro del Pod
+          image: registry.k8s.io/pause:3.10     # Imagen mínima que no hace nada; sirve para probar sin gastar recursos
+          resources:                            # Recursos que el contenedor declara
+            requests:                           # Lo que pide que le RESERVEN (garantizado)
+              cpu: 100m                         # 0,1 núcleos reservados (dentro del rango permitido)
+              memory: 64Mi                      # 64 MiB de RAM reservados (dentro del rango permitido)
+            limits:                             # El TECHO que el contenedor nunca podrá pasar
+              cpu: "1"                          # 1 núcleo completo: supera el máximo de 500m, por eso se rechaza
+              memory: 128Mi                     # 128 MiB de RAM (dentro del rango permitido)

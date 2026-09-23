@@ -1,0 +1,17 @@
+# ResourceQuota: tope AGREGADO de todo el namespace (suma de todos los Pods).
+# Cabe en el tope 3 Pods con los valores por defecto del LimitRange:
+#   3 x 100m = 300m de requests.cpu  |  3 x 200m = 600m de limits.cpu
+apiVersion: v1                                  # Versión de la API donde vive el objeto ResourceQuota
+kind: ResourceQuota                             # Tipo de objeto: presupuesto TOTAL de recursos del namespace
+metadata:                                       # Datos que identifican al objeto
+  name: namespace-quota                         # Nombre de la cuota
+  namespace: lab-resource-quota                 # Namespace al que se le pone este presupuesto
+  labels:                                       # Etiquetas para agrupar y buscar
+    app.kubernetes.io/part-of: lab-resource-quota  # Pertenece al laboratorio
+spec:                                           # Especificación: lo que queremos que se cumpla
+  hard:                                         # Topes duros: al llegar aquí, nada nuevo entra
+    pods: "10"                                  # Máximo 10 Pods (cajas que corren contenedores) en el namespace
+    requests.cpu: 300m                          # La suma de CPU reservada por todos los Pods no pasa de 0,3 núcleos
+    requests.memory: 256Mi                      # La suma de RAM reservada por todos los Pods no pasa de 256 MiB
+    limits.cpu: 600m                            # La suma de los techos de CPU de todos los Pods no pasa de 0,6 núcleos
+    limits.memory: 512Mi                        # La suma de los techos de RAM de todos los Pods no pasa de 512 MiB

@@ -1,0 +1,7 @@
+# Namespace aislado para el laboratorio de LimitRange + ResourceQuota.
+apiVersion: v1                                    # Versión de la API de Kubernetes que define este tipo de objeto
+kind: Namespace                                   # Tipo de objeto: un "espacio" o carpeta lógica que agrupa y aísla recursos
+metadata:                                         # Datos que identifican al objeto
+  name: lab-resource-quota                        # Nombre del namespace; los demás archivos lo usan para ubicarse aquí
+  labels:                                         # Etiquetas: pares clave=valor para buscar y agrupar objetos
+    app.kubernetes.io/part-of: lab-resource-quota # Etiqueta estándar: indica a qué proyecto pertenece este objeto

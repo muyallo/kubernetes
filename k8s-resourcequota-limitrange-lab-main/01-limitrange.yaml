@@ -1,0 +1,25 @@
+# LimitRange: reglas POR CONTENEDOR. Actúa en la admisión de cada Pod:
+#   - si el contenedor no declara resources, inyecta defaultRequest/default
+#   - si declara valores fuera de [min, max], rechaza el Pod
+apiVersion: v1                                  # Versión de la API donde vive el objeto LimitRange
+kind: LimitRange                                # Tipo de objeto: reglas de tamaño para CADA contenedor del namespace
+metadata:                                       # Datos que identifican al objeto
+  name: container-limits                        # Nombre del LimitRange dentro del namespace
+  namespace: lab-resource-quota                 # Namespace donde aplican estas reglas (solo afecta a este)
+  labels:                                       # Etiquetas para agrupar y buscar
+    app.kubernetes.io/part-of: lab-resource-quota  # Pertenece al laboratorio
+spec:                                           # Especificación: lo que queremos que se cumpla
+  limits:                                       # Lista de reglas de límites
+    - type: Container                           # La regla se aplica a cada contenedor (no al Pod completo)
+      defaultRequest:                           # Lo que se RESERVA si el contenedor no dice cuánto necesita
+        cpu: 100m                               # 100 milicores = 0,1 de un núcleo de CPU reservado
+        memory: 64Mi                            # 64 mebibytes de memoria RAM reservados
+      default:                                  # El TECHO que se pone si el contenedor no declara uno
+        cpu: 200m                               # Nunca podrá usar más de 0,2 núcleos (se le frena)
+        memory: 128Mi                           # Si pasa de 128 MiB de RAM, se le mata (OOMKilled)
+      min:                                      # Lo MÍNIMO que un contenedor puede pedir; menos se rechaza
+        cpu: 50m                                # Mínimo 0,05 núcleos
+        memory: 32Mi                            # Mínimo 32 MiB de RAM
+      max:                                      # Lo MÁXIMO que un contenedor puede pedir; más se rechaza
+        cpu: 500m                               # Máximo medio núcleo por contenedor
+        memory: 256Mi                           # Máximo 256 MiB de RAM por contenedor

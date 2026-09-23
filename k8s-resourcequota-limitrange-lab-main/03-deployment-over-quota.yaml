@@ -1,0 +1,26 @@
+# Caso 1: pide 5 réplicas; cada una es válida para el LimitRange,
+# pero la suma (500m de requests.cpu) supera la cuota (300m).
+# Sin bloque resources: el LimitRange inyecta los valores por defecto.
+apiVersion: apps/v1                             # Versión de la API donde viven los Deployments
+kind: Deployment                                # Tipo de objeto: mantiene N copias (réplicas) de una aplicación corriendo
+metadata:                                       # Datos que identifican al objeto
+  name: web-over-quota                          # Nombre del Deployment
+  namespace: lab-resource-quota                 # Namespace donde se crea (y cuya cuota consume)
+  labels:                                       # Etiquetas del Deployment
+    app.kubernetes.io/name: web-over-quota      # Etiqueta estándar: nombre de la aplicación
+    app.kubernetes.io/part-of: lab-resource-quota  # Pertenece al laboratorio
+spec:                                           # Especificación: el estado que queremos
+  replicas: 5                                   # Queremos 5 copias; la cuota solo alcanza para 3
+  selector:                                     # Cómo reconoce el Deployment cuáles Pods son suyos
+    matchLabels:                                # Son suyos los Pods que tengan estas etiquetas
+      app.kubernetes.io/name: web-over-quota    # Debe coincidir con la etiqueta de la plantilla de abajo
+  template:                                     # Plantilla (molde) con la que se fabrica cada Pod
+    metadata:                                   # Datos que llevará cada Pod creado
+      labels:                                   # Etiquetas que se ponen a cada Pod
+        app.kubernetes.io/name: web-over-quota  # Así el selector de arriba lo reconoce como propio
+        app.kubernetes.io/part-of: lab-resource-quota  # Pertenece al laboratorio
+    spec:                                       # Qué corre dentro de cada Pod
+      containers:                               # Lista de contenedores del Pod
+        - name: pause                           # Nombre del contenedor dentro del Pod
+          image: registry.k8s.io/pause:3.10     # Imagen mínima que no hace nada; sirve para probar sin gastar recursos
+          # Sin "resources": el LimitRange le pone 100m/64Mi reservados y 200m/128Mi de techo
