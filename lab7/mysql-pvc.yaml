@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-persistente
+  namespace: lab7
+  labels:
+    app: mysql
+spec:
+  containers:
+    - name: mysql
+      image: mysql:8.0.42
+      ports:
+        - containerPort: 3306
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_DATABASE
+      volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+      readinessProbe:
+        exec:
+          command:
+            - sh
+            - -c
+            - mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD" --silent
+        initialDelaySeconds: 10
+        periodSeconds: 5
+        timeoutSeconds: 3
+        failureThreshold: 12
+      resources:
+        requests:
+          cpu: 200m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+  volumes:
+    - name: mysql-data
+      persistentVolumeClaim:
+        claimName: pvc-lab7-static
