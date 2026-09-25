@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: auditor-reader
+  namespace: cka-security
+subjects:
+  - kind: ServiceAccount
+    name: auditor
+    namespace: cka-security
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: workload-reader

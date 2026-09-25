@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-app
+  namespace: cka-workloads
+  labels:
+    app: analytics-app
+    environment: cka
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: analytics-app
+  template:
+    metadata:
+      labels:
+        app: analytics-app
+        environment: cka
+    spec:
+      nodeSelector:
+        workload: analytics
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "analytics"
+          effect: "NoSchedule"
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exam-web
+  namespace: cka-workloads
+  labels:
+    app: exam-web
+    environment: cka
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: exam-web
+  template:
+    metadata:
+      labels:
+        app: exam-web
+        environment: cka
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
