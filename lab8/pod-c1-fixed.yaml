@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-c1-dns-policy
+  namespace: troubleshooting-lab
+  labels:
+    scenario: c1
+spec:
+  dnsPolicy: ClusterFirst
+  containers:
+    - name: debug
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 3600"]
